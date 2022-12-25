@@ -1,16 +1,21 @@
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 
-const Home: NextPage = () => {
+type Props = {
+  text: string;
+};
+const Home: NextPage<Props> = (props) => {
+  const { text } = props;
+  const [textInFront, setTextInFront] = useState("");
   useEffect(() => {
-    // console.log("useEffect");
     const main = async () => {
-      // const res = await fetch("http://api:3001");
       const res = await fetch("http://localhost:4000");
+      console.log(res);
       const a = await res.text();
+      setTextInFront(a);
       console.log(a, "in useEffect");
     };
     main();
@@ -28,6 +33,8 @@ const Home: NextPage = () => {
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
+        <h2>{text} from getServerSideProps</h2>
+        <h2>{textInFront} from useEffect</h2>
 
         <p className={styles.description}>
           Get started by editing{" "}
@@ -83,11 +90,11 @@ const Home: NextPage = () => {
 
 export default Home;
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps<Props> = async () => {
   const res = await fetch("http://api:4000");
   const a = await res.text();
-  console.log(a);
+  console.log(a, "in getServerSideProps");
   return {
-    props: {},
+    props: { text: a },
   };
 };
