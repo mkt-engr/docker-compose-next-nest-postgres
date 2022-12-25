@@ -11,7 +11,7 @@ services:
 
 ```ts
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
-  const res = await fetch("http://api:5000");
+  const res = await fetch("http://api:4000");
   const a = await res.text();
   console.log(a, "in getServerSideProps");
   return {
