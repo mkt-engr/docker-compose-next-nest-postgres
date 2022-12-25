@@ -1,0 +1,43 @@
+version: "3"
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    container_name: frontend-nextjs_20221225
+    volumes:
+      - ./frontend:/usr/src/app/frontend
+    command: sh -c "npm run dev"
+    tty: true
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      - app-network
+  backend:    
+    hostname: api #const res = await axios.get('http://api:3000/api/endpoint');
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    container_name: backend-nestjs_20221225
+    volumes:
+      - ./backend:/usr/src/app/backend
+    command: sh -c "npm run start:dev"
+    stdin_open: true
+    networks:
+      - app-network
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: database
+    ports:
+      - "5432:5432"
+networks:
+  app-network:
+    driver: bridge
